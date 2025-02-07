@@ -58,6 +58,7 @@ export async function createCheckoutSession(params: {
           currency: 'usd',
           product_data: {
             name: `${params.shipping.method.toUpperCase()} Shipping`,
+            images: ['/icons/shipping.svg'],
           },
           unit_amount: params.shipping.cost,
         },

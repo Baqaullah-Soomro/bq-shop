@@ -44,13 +44,11 @@ export async function POST(req: Request) {
 					if (shipmentId && !session.metadata?.labelUrl) {
 						const label = await createLabel(shipmentId);
 						
-						// Update session with tracking info
-						await stripe.checkout.sessions.update(session.id, {
-							metadata: {
-								...session.metadata,
-								trackingNumber: label.tracking_number,
-								labelUrl: label.label_download_url
-							}
+						// Log shipping details
+						console.log('Shipping label created:', {
+							sessionId: session.id,
+							trackingNumber: label.tracking_number,
+							labelUrl: label.label_download_url
 						});
 					}
 

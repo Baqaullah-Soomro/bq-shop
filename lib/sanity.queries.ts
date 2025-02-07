@@ -2,6 +2,8 @@ import { groq } from 'next-sanity'
 import { client } from '@/sanity/lib/client'
 
 export interface Product {
+  id: any
+  discountPrice: number
 	style: string
 	stock: number
 	_id: string
@@ -124,7 +126,7 @@ export async function searchProducts(query: string): Promise<Product[]> {
 	);
 	
 	const searchTerm = query.toLowerCase();
-	return products.filter(product => 
+	return products.filter((product: Product) => 
 		product.name?.toLowerCase().includes(searchTerm) ||
 		product.category?.toLowerCase().includes(searchTerm) ||
 		product.brand?.toLowerCase().includes(searchTerm)

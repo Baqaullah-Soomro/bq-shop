@@ -78,7 +78,7 @@ const RelatedProducts: FC<RelatedProductsProps> = ({ currentProduct, relatedProd
 								<div className="flex items-center justify-center gap-2">
 									<RatingStars rating={product.rating} size="sm" />
 									<span className="text-xs text-gray-600">
-										({product.numReviews || 0})
+										({product.reviews.count || 0})
 									</span>
 								</div>
 								<div className="flex items-center justify-center gap-2">

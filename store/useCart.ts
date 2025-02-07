@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Product } from './useProducts';
+import { Product } from '@/lib/sanity.queries';
 
 export interface CartItem {
   product: Product;

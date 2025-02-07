@@ -118,6 +118,7 @@ export async function POST(req: Request) {
           currency: 'usd',
           product_data: {
             name: `${shippingDetails.shippingMethod.toUpperCase()} Shipping`,
+            images: ['/icons/outlineOffer.svg']
           },
           unit_amount: shippingCost,
         },

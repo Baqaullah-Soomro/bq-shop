@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { StarIcon } from '@heroicons/react/24/solid';
 import ReviewForm from './ReviewForm';
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { useCart } from '@/hooks/useCart';
+import useCart from '@/store/useCart';
 import toast from 'react-hot-toast';
 import RecommendedProducts from '@/components/products/RecommendedProducts';
 import { Product } from '@/lib/sanity.queries';
@@ -31,78 +31,80 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     id: string;
     rating: number;
     title: string;
-    comment: string;
+    text: string;
     name: string;
     date: string;
+    images?: string[];
   }>>([]);
   const [editingReview, setEditingReview] = useState<{
     id: string;
     rating: number;
     title: string;
-    comment: string;
+    text: string;
     name: string;
     date: string;
+    images?: string[];
   } | undefined>(undefined);
 
   const handleReviewSubmit = (review: {
     rating: number;
     title: string;
-    comment: string;
+    text: string;
     name: string;
     email: string;
+    images: File[];
   }) => {
+    const { email, images, ...rest } = review;
     const newReview = {
       id: Math.random().toString(36).substr(2, 9),
-      ...review,
+      ...rest,
+      images: images.map(file => URL.createObjectURL(file)),
       date: new Date().toLocaleDateString()
     };
     setReviews([newReview, ...reviews]);
     setShowReviewForm(false);
     toast.success('Review submitted successfully!');
-    };
+  };
 
-    const handleEditReview = (review: {
+  const handleEditReview = (review: {
     rating: number;
     title: string;
-    comment: string;
+    text: string;
     name: string;
     email: string;
-    }) => {
+    images: File[];
+  }) => {
     if (editingReview) {
+      const { email, images, ...rest } = review;
       const updatedReviews = reviews.map((r) =>
-      r.id === editingReview.id
-        ? { ...r, ...review, date: new Date().toLocaleDateString() }
-        : r
+        r.id === editingReview.id
+          ? {
+              ...r,
+              ...rest,
+              images: images.map(file => URL.createObjectURL(file)),
+              date: new Date().toLocaleDateString()
+            }
+          : r
       );
       setReviews(updatedReviews);
-        setEditingReview(undefined);
+      setEditingReview(undefined);
       setShowReviewForm(false);
       toast.success('Review updated successfully!');
     }
-    };
+  };
 
-    const handleDeleteReview = (reviewId: string) => {
+  const handleDeleteReview = (reviewId: string) => {
     if (window.confirm('Are you sure you want to delete this review?')) {
       setReviews(reviews.filter((r) => r.id !== reviewId));
       toast.success('Review deleted successfully!');
     }
-    };
+  };
 
-    const handleAddToCart = () => {
-    const cartItem = {
-      id: product._id,
-      name: product.name,
-      price: product.discountPrice || product.price,
-      image: product.images[0],
-      size: selectedSize,
-      quantity,
-      maxStock: product.stock || 100
-    };
-    
-    addItem(cartItem);
+  const handleAddToCart = () => {
+    addItem(product, selectedSize);
     toast.success(`${product.name} added to cart!`);
     setCartOpen(true);
-    };
+  };
 
   return (
     <div className="bg-white">
@@ -415,7 +417,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                   </div>
                   </div>
                   <h3 className="font-medium mb-2">{review.title}</h3>
-                  <p className="text-gray-600">{review.comment}</p>
+                  <p className="text-gray-600">{review.text}</p>
                 </div>
                 ))}
               </div>

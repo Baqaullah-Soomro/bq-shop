@@ -119,8 +119,7 @@ export default async function PartyPage() {
 					<h2 className="font-integral text-3xl mb-8">Complete Your Look</h2>
 					<ProductGrid
 						products={suggestedProducts}
-						viewAllLink="/shop"
-					/>
+						viewAllLink="/shop" title={''}					/>
 				</div>
 			</section>
 

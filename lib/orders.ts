@@ -1,4 +1,4 @@
-import { prisma } from './prisma';
+
 import { Stripe } from 'stripe';
 
 export async function createOrder(
