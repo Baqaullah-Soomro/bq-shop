@@ -6,6 +6,10 @@ import { createLabel } from '@/lib/shipengine';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
+// Use the new App Router config style
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
 	try {
 		const body = await req.text();
