@@ -9,6 +9,8 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 // Use the new App Router config style
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+// This replaces the old bodyParser config
+export const maxDuration = 60; // Maximum duration in seconds
 
 export async function POST(req: Request) {
 	try {
