@@ -3,12 +3,6 @@ export const metadata = {
   description: 'Shop-Co Content Management System'
 }
 
-export const viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1
-}
-
 export const dynamic = 'force-static'
 
 export default function StudioRootLayout({
