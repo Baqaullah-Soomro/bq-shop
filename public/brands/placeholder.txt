@@ -1,0 +1,7 @@
+This directory contains brand logos. Please add the following logo files:
+- versace.png
+- zara.png
+- hm.png
+- nike.png
+- adidas.png
+- gucci.png
