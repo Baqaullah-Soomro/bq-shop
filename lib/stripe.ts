@@ -40,6 +40,12 @@ export async function createCheckoutSession(params: {
   };
 }) {
   try {
+    console.log('Creating checkout session with params:', JSON.stringify(params, null, 2));
+
+    if (!params.items?.length) {
+      return { error: 'No items provided' };
+    }
+
     const lineItems = params.items.map(item => ({
       price_data: {
         currency: 'usd',
@@ -51,6 +57,8 @@ export async function createCheckoutSession(params: {
       },
       quantity: item.quantity,
     }));
+
+    console.log('Creating Stripe session with line items:', JSON.stringify(lineItems, null, 2));
 
     const session = await stripe.checkout.sessions.create({
       customer_email: params.email,
@@ -73,15 +81,19 @@ export async function createCheckoutSession(params: {
         },
       ] : undefined,
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
+        success_url: `/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `/cart`,
       metadata: params.metadata,
     });
 
+    console.log('Successfully created Stripe session:', session.id);
     return { session };
   } catch (error: any) {
-    console.error('Error creating checkout session:', error);
-    return { error: error.message || 'Failed to create checkout session' };
+    console.error('Stripe error:', error);
+    return { 
+      error: error.message || 'Failed to create checkout session',
+      details: error.stack
+    };
   }
 }
 

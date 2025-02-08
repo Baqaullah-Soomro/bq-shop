@@ -43,6 +43,20 @@ A modern, responsive e-commerce platform built with Next.js 13, TypeScript, and 
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## Environment Setup
+
+1. Create a `.env.local` file in the root directory
+2. Add the following environment variables:
+   ```env
+   NEXT_PUBLIC_BASE_URL=your_deployment_url_or_localhost
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+   STRIPE_SECRET_KEY=your_stripe_secret_key
+   ```
+3. For local development, use:
+   ```env
+   NEXT_PUBLIC_BASE_URL=http://localhost:3000
+   ```
+
 ## Project Structure
 
 ```

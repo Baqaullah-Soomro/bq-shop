@@ -54,20 +54,35 @@ const CheckoutPage = () => {
 				shippingDetails: data
 			};
 
-			const response = await fetch("/api/checkout", {
+			console.log('Sending request with data:', JSON.stringify(requestData, null, 2));
+
+			const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
+			const response = await fetch(`${baseUrl}/api/checkout`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
+					"Accept": "application/json",
 				},
+				credentials: 'include',
 				body: JSON.stringify(requestData),
 			});
 
-			const responseData = await response.json();
-			
+			console.log('Response status:', response.status);
+			const responseText = await response.text();
+			console.log('Response text:', responseText);
+
+			let responseData;
+			try {
+				responseData = JSON.parse(responseText);
+			} catch (e) {
+				console.error('Failed to parse response:', e);
+				throw new Error('Invalid response from server');
+			}
+
 			if (!response.ok) {
 				throw new Error(responseData.error || 'Failed to create checkout session');
 			}
-			
+
 			if (responseData.url) {
 				router.push(responseData.url);
 			} else {
