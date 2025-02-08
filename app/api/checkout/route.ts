@@ -1,14 +1,14 @@
 import { createCheckoutSession } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 
-// Interface for cart items
+// Interface for cart items with required fields
 interface CartItem {
-	id: string;
-	name: string;
-	price: number;
-	quantity: number;
-	image: string;
-	size: string;
+	id: string;          // Unique identifier
+	name: string;        // Product name
+	price: number;       // Product price
+	quantity: number;    // Quantity selected
+	image: string;       // Product image URL
+	size: string;        // Selected size
 }
 
 export async function POST(req: Request) {
