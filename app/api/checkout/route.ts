@@ -1,6 +1,7 @@
 import { createCheckoutSession } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 
+// Interface for cart items
 interface CartItem {
 	id: string;
 	name: string;
