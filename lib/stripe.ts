@@ -80,10 +80,10 @@ export async function createCheckoutSession(params: {
           },
         },
       ] : undefined,
-      mode: 'payment',
-        success_url: `/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `/cart`,
-      metadata: params.metadata,
+        mode: 'payment',
+        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart`,
+        metadata: params.metadata,
     });
 
     console.log('Successfully created Stripe session:', session.id);
