@@ -52,23 +52,26 @@ export async function createCheckoutSession(params: {
       quantity: item.quantity,
     }));
 
-    if (params.shipping) {
-      lineItems.push({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: `${params.shipping.method.toUpperCase()} Shipping`,
-            images: ['/icons/shipping.svg'],
-          },
-          unit_amount: params.shipping.cost,
-        },
-        quantity: 1,
-      });
-    }
-
     const session = await stripe.checkout.sessions.create({
       customer_email: params.email,
+      payment_method_types: ['card'],
+      billing_address_collection: 'required',
+      shipping_address_collection: {
+        allowed_countries: ['US', 'CA', 'GB'],
+      },
       line_items: lineItems,
+      shipping_options: params.shipping ? [
+        {
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: {
+              amount: params.shipping.cost,
+              currency: 'usd',
+            },
+            display_name: `${params.shipping.method.charAt(0).toUpperCase() + params.shipping.method.slice(1)} Shipping`,
+          },
+        },
+      ] : undefined,
       mode: 'payment',
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,

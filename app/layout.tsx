@@ -6,7 +6,6 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import CartProvider from '@/providers/CartProvider'
 import { ClerkProvider } from '@clerk/nextjs'
-
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -38,3 +37,4 @@ export default function RootLayout({
     </html>
   )
 }
+

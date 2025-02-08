@@ -12,9 +12,9 @@ const publicPaths = [
   "/product*",
   "/cart*",
   "/checkout*",
-  "/api/checkout*",
   "/api/webhook*"
 ];
+
 
 const isPublic = (path: string) => {
   return publicPaths.find((x) =>

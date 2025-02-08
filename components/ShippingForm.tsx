@@ -15,13 +15,17 @@ export interface ShippingFormData {
 	shippingMethod: 'standard' | 'express';
 }
 
-const ShippingForm = ({ 
-	onSubmit,
-	onBack
-}: { 
+interface ShippingFormProps {
 	onSubmit: (data: ShippingFormData) => void;
 	onBack: () => void;
-}) => {
+	loading?: boolean;
+}
+
+const ShippingForm = ({ 
+	onSubmit,
+	onBack,
+	loading = false
+}: ShippingFormProps) => {
 	const { register, handleSubmit, formState: { errors } } = useForm<ShippingFormData>();
 
 	return (
@@ -147,9 +151,10 @@ const ShippingForm = ({
 				</button>
 				<button
 					type="submit"
-					className="w-full bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors"
+					disabled={loading}
+					className="w-full bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors disabled:bg-gray-400"
 				>
-					Continue to Payment
+					{loading ? 'Processing...' : 'Continue to Payment'}
 				</button>
 			</div>
 		</form>

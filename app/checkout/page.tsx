@@ -1,32 +1,34 @@
 'use client';
 
-import CheckoutPage from "@/components/CheckoutPage";
-import { loadStripe } from "@stripe/stripe-js";
+import dynamic from 'next/dynamic';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
-// Initialize Stripe with proper error handling
-const getStripe = async () => {
-  if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
-    throw new Error('Missing Stripe publishable key');
-  }
-  
-  const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+const CheckoutPage = dynamic(() => import('@/components/CheckoutPage'), {
+  ssr: false,
+});
+
+const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+if (!stripeKey) {
+  throw new Error('Missing NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY');
+}
+
+const stripePromise = loadStripe(stripeKey).then(stripe => {
   if (!stripe) {
     throw new Error('Failed to initialize Stripe');
   }
-  
   return stripe;
-};
+});
 
 export default function Checkout() {
-  // Initialize Stripe
-  getStripe().catch(error => {
-    console.error('Stripe initialization error:', error);
-  });
-
   return (
-    <div className="container mx-auto py-8">
-      <CheckoutPage />
-    </div>
+    <Elements stripe={stripePromise}>
+      <div className="container mx-auto py-8">
+        <CheckoutPage />
+      </div>
+    </Elements>
   );
 }
+
+
 
