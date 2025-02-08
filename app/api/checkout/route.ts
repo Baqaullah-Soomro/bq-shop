@@ -1,13 +1,22 @@
 import { createCheckoutSession } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 
+interface CartItem {
+	id: string;
+	name: string;
+	price: number;
+	quantity: number;
+	image: string;
+	size: string;
+}
+
 export async function POST(req: Request) {
 	try {
 		const body = await req.json();
 		const { items, billingDetails, shippingDetails } = body;
 
 		const { session, error } = await createCheckoutSession({
-			items: items.map(item => ({
+			items: items.map((item: CartItem) => ({
 				name: item.name,
 				price: item.price,
 				quantity: item.quantity,
