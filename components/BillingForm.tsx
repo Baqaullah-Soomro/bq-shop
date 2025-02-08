@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useUser } from "@clerk/nextjs";
 
 export interface BillingFormData {
 	firstName: string;
@@ -16,7 +17,12 @@ export interface BillingFormData {
 }
 
 const BillingForm = ({ onSubmit }: { onSubmit: (data: BillingFormData) => void }) => {
-	const { register, handleSubmit, formState: { errors } } = useForm<BillingFormData>();
+	const { user } = useUser();
+	const { register, handleSubmit, formState: { errors } } = useForm<BillingFormData>({
+		defaultValues: {
+			email: user?.emailAddresses[0]?.emailAddress || '',
+		}
+	});
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -43,17 +49,13 @@ const BillingForm = ({ onSubmit }: { onSubmit: (data: BillingFormData) => void }
 				<label className="block text-sm font-medium mb-1">Email</label>
 				<input
 					type="email"
-					{...register('email', { 
-						required: 'Email is required',
-						pattern: {
-							value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-							message: 'Invalid email address'
-						}
-					})}
-					className="w-full border rounded-md p-2"
+					{...register('email', { required: 'Email is required' })}
+					
+					className="w-full border rounded-md p-2 bg-gray-50"
 				/>
 				{errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
 			</div>
+
 
 			<div>
 				<label className="block text-sm font-medium mb-1">Phone</label>

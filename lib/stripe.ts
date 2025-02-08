@@ -40,6 +40,12 @@ export async function createCheckoutSession(params: {
   };
 }) {
   try {
+    console.log('Creating checkout session with params:', JSON.stringify(params, null, 2));
+
+    if (!params.items?.length) {
+      return { error: 'No items provided' };
+    }
+
     const lineItems = params.items.map(item => ({
       price_data: {
         currency: 'usd',
@@ -52,33 +58,42 @@ export async function createCheckoutSession(params: {
       quantity: item.quantity,
     }));
 
-    if (params.shipping) {
-      lineItems.push({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: `${params.shipping.method.toUpperCase()} Shipping`,
-            images: ['/icons/shipping.svg'],
-          },
-          unit_amount: params.shipping.cost,
-        },
-        quantity: 1,
-      });
-    }
+    console.log('Creating Stripe session with line items:', JSON.stringify(lineItems, null, 2));
 
     const session = await stripe.checkout.sessions.create({
       customer_email: params.email,
+      payment_method_types: ['card'],
+      billing_address_collection: 'required',
+      shipping_address_collection: {
+        allowed_countries: ['US', 'CA', 'GB'],
+      },
       line_items: lineItems,
-      mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
-      metadata: params.metadata,
+      shipping_options: params.shipping ? [
+        {
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: {
+              amount: params.shipping.cost,
+              currency: 'usd',
+            },
+            display_name: `${params.shipping.method.charAt(0).toUpperCase() + params.shipping.method.slice(1)} Shipping`,
+          },
+        },
+      ] : undefined,
+        mode: 'payment',
+        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart`,
+        metadata: params.metadata,
     });
 
+    console.log('Successfully created Stripe session:', session.id);
     return { session };
   } catch (error: any) {
-    console.error('Error creating checkout session:', error);
-    return { error: error.message || 'Failed to create checkout session' };
+    console.error('Stripe error:', error);
+    return { 
+      error: error.message || 'Failed to create checkout session',
+      details: error.stack
+    };
   }
 }
 
